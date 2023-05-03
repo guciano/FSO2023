@@ -2,10 +2,10 @@ import { useState } from "react";
 
 const Header = ({text}) => <h1>{text}</h1>
 
-// const Button = ({handle, text}) => 
-//   <button onClick={handle}>
-//     {text}
-//   </button>
+const Button = ({handle, text}) => 
+  <button onClick={handle}>
+    {text}
+  </button>
 
 const StatisticLine = ({text, value}) => 
   <tr>
@@ -57,9 +57,10 @@ const App = () => {
   return (
     <div>
       <Header text="give feedback" />
-      <button onClick={sumGood}>good</button>
-      <button onClick={sumNeutral}>neutral</button>
-      <button onClick={sumBad}>bad</button>
+      <Button handle={sumGood} text="good" />
+      <Button handle={sumNeutral} text="neutral" />
+      <Button handle={sumBad} text="bad" />
+      
       <Header text="statistics" />
       <Statistics clicks={clicks}/>
 
