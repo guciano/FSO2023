@@ -12,6 +12,10 @@ const Statistics = ({clicks}) => {
   const average = (clicks.good - clicks.bad) / all
   const positive = clicks.good / all + "%"
 
+  if (all === 0) {
+    return <div>No feedback given</div>
+  }
+
   return (
     <div>
       <p>good {clicks.good}</p>
