@@ -7,6 +7,12 @@ const Header = ({text}) => <h1>{text}</h1>
 //     {text}
 //   </button>
 
+const StatisticLine = ({text, value}) => 
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
+
 const Statistics = ({clicks}) => {
   const all = clicks.good + clicks.neutral + clicks.bad
   const average = (clicks.good - clicks.bad) / all
@@ -18,12 +24,12 @@ const Statistics = ({clicks}) => {
 
   return (
     <div>
-      <p>good {clicks.good}</p>
-      <p>neutral {clicks.neutral}</p>
-      <p>bad {clicks.bad}</p>
-      <p>all {all}</p>
-      <p>average {average}</p>
-      <p>positive {positive}</p>
+      <StatisticLine text="good" value={clicks.good} />
+      <StatisticLine text="neutral" value={clicks.neutral} />
+      <StatisticLine text="bad" value={clicks.bad} />
+      <StatisticLine text="all" value={all} />
+      <StatisticLine text="average" value={average} />
+      <StatisticLine text="positive" value={positive} />
     </div>
   )
 }
