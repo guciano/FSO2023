@@ -13,6 +13,13 @@ function App() {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+
+    const lowerCaseName = newName.toLowerCase();
+    if (persons.map((person) => person.name.toLowerCase() === lowerCaseName).length > 0) {
+      alert(`${newName} is already added to the phonebook.`)
+      return
+    }
+
     const newPerson = { name: newName }
     setPersons([...persons, newPerson])
     setNewName(' ')
