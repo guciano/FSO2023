@@ -6,11 +6,11 @@ const Persons = ({ persons, searchTerm }) => {
   );
 
   return (
-    <div>
+    <ul>
       {filteredPersons.map(person => (
-        <div key={person.id}>{person.name} {person.number}</div>
+        <li key={person.id}>{person.name} {person.number}</li>
       ))}
-    </div>
+    </ul>
   );
 };
 
