@@ -6,13 +6,13 @@ const read = () => {
     return request.then(response => response.data);
 }
 
-const create = personObject => {
-    const request = axios.post(baseUrl, personObject);
+const create = contactObject => {
+    const request = axios.post(baseUrl, contactObject);
     return request.then(response => response.data)
 }
 
-const remove = (id) => {
-    const request = axios.delete(`${baseUrl}/${id}`);
+const remove = id => {
+    const request = axios.delete(`${baseUrl}/${id}`)
     return request.then(response => response.data)
 }
 

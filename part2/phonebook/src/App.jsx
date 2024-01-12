@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import contactDBService from './service/contactDBService'; 
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,13 +10,12 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   
+  
   //show all data
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+    contactDBService
+      .read()
+      .then(initialContactData => setPersons(initialContactData))
   }, [])
 
   //add data
@@ -24,15 +23,28 @@ const App = () => {
     e.preventDefault();
     const personObject = {
       name: newName,
-      number: newNumber,
-      id: persons.length + 1
+      number: newNumber
     }
 
-    axios
-      .post('http://localhost:3001/persons', personObject)
-      .then(response => {
-        setPersons(persons.concat(response.data));
+    contactDBService
+      .create(personObject)
+      .then(returnedContact => {
+        setPersons([...persons, returnedContact]);
       })
+  };
+
+  const deleteContact = id => {
+    const deletePerson = persons.find(person => person.id === id)
+    const windowConfirm = window.confirm(`Delete ${deletePerson.name}?`)    
+    
+    if (windowConfirm) {
+      contactDBService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((person) => person.id !== id))
+        })
+        
+    }
   };
 
   const handleNameChange = (e) => {
@@ -46,6 +58,11 @@ const App = () => {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
+
+  const person = persons.filter(person =>
+    person.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -63,8 +80,8 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-
-      <Persons persons={persons} searchTerm={searchTerm} />
+      
+      <Persons persons={person} searchTerm={searchTerm} deleteContact={deleteContact} />
     </div>
   );
 };
