@@ -3,19 +3,22 @@ import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
 import contactDBService from './service/contactDBService'; 
+import Notification from './components/Notification'
+import './App.css'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  
+  const [notification, setNotification] = useState(null);
   
   //show all data
   useEffect(() => {
     contactDBService
       .read()
       .then(initialContactData => setPersons(initialContactData))
+      .catch(error => console.error(error))
   }, [])
 
   //add data
@@ -40,8 +43,21 @@ const App = () => {
           .update(existingPerson.id, updateContact)
           .then((returnedContact) => {
             setPersons(
-              persons.map((person) => (person.id !== existingPerson.id ? person : returnedContact))
-            );
+              persons.map(person => (person.id !== existingPerson.id ? person : returnedContact))
+            )
+            setNotification({
+              text: `Updated ${returnedContact.name}'s number`,
+              type: 'success'
+            });
+            setTimeout(() => setNotification(null), 4500);
+          })
+          .catch(() => {
+            setPersons(persons.filter(person => person.name !== person.name))
+            setNotification({
+              text: `Information of ${person.name} has already been removed from server`,
+              type: 'error'
+            })
+            setTimeout(() => setNotification(null), 4500)
           });
       }
     } else {
@@ -50,11 +66,25 @@ const App = () => {
         number: newNumber,
       };
   
-      contactDBService.create(personObject).then((returnedContact) => {
-        setPersons([...persons, returnedContact]);
-      });
+      contactDBService
+        .create(personObject)
+        .then((returnedContact) => {
+           setPersons([...persons, returnedContact])
+           setNotification({
+            text: `Added ${returnedContact.name}`,
+            type: 'success'
+           })
+           setTimeout(() => setNotification(null), 4500);
+        })
+        .catch(error => {
+          setNotification({
+            text: error.response.data,
+            type: 'error'
+          })
+          setTimeout(() => setNotification(null), 4500);
+        })
+        
     }
-
     setNewName('');
     setNewNumber('');
   };  
@@ -70,8 +100,20 @@ const App = () => {
           setPersons(
             persons.filter((person) => person.id !== id)
           )
+          setNotification({
+            text: `${deletePerson.name} has been deleted`,
+            type: 'success'
+          })
+          setTimeout(() => setNotification(null), 4500);
         })
-        
+        .catch(() => {
+          setPersons(persons.filter(person => person.id !== id))
+          setNotification({
+            text: error.response.data,
+            type: 'error'
+          })
+          setTimeout(() => setNotification(null), 4500);
+        })
     }
   };
 
@@ -94,9 +136,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification notification={notification} />
       <Filter searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
-
       <h3>Add a new</h3>
 
       <PersonForm

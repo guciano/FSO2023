@@ -1,0 +1,21 @@
+.success {
+  color: white;
+  background: green;
+  font-family: sans-serif;
+  font-size: 20px;
+  border-style: none;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px; 
+}
+
+.error {
+    color: white;
+    background: red;
+    font-family: sans-serif;
+    font-size: 20px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
